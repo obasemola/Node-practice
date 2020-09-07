@@ -1,7 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express()
-app.use(morgan('tiny'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :personsInfo'))
+
 app.use(express.json())
 
 
@@ -44,7 +45,6 @@ let persons = [
   ]
 
 
-
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 
@@ -64,6 +64,7 @@ app.get('/api/persons/:id', (request, response) => {
 
   if (person) {
     response.json(person)
+  
   } else {
     response.status(404).end()
   }
@@ -102,6 +103,10 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
     id: Math.floor(Math.random() * 1000)
   }
+
+  morgan.token('personsInfo', (req, res) => {
+    return JSON.stringify(person)
+  })
 
   persons = persons.concat(person)
 
