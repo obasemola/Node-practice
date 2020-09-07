@@ -40,14 +40,18 @@ let persons = [
   ]
 
 
-// app.get('/info', (request, response) => {
-//   const date = new Date()
-//   response.write(`<p>Phonebook has info for ${persons.length} people</p>`)
-//   response.write(`${date}`)
-//   response.end()
+app.get('/api/persons', (request, response) => {
+  response.json(persons)
 
+})
 
-// })
+app.get('/info', (request, response) => {
+  const date = new Date()
+  response.write(`<p>Phonebook has info for ${persons.length} people</p>`)
+  response.write(`${date}`)
+  response.end()
+
+})
 
 app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
@@ -60,6 +64,15 @@ app.get('/api/persons/:id', (request, response) => {
   }
 
 })
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.filter(person => person.id !== id)
+
+  response.status(204).end()
+})
+
+
 
 
 
