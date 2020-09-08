@@ -1,11 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const app = express()
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :personsInfo'))
-app.use(cors());
+const app = express();
+app.use(express.static('build'));
 
-app.use(express.json())
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :personsInfo'))
+
+app.use(cors());
+app.use(express.json());
+
 
 
 let persons = [
@@ -47,12 +50,31 @@ let persons = [
   ]
 
 
+
+
+app.get('/index.html', (request, response) => {
+
+  // morgan.token('personsInfo', (req, res) => {
+  //   return '';
+  // })
+
+  // response.json(persons)
+
+})
 app.get('/api/persons', (request, response) => {
+
+  // morgan.token('personsInfo', (req, res) => {
+  //   return '';
+  // })
+
   response.json(persons)
 
 })
 
 app.get('/info', (request, response) => {
+  // morgan.token('personsInfo', (req, res) => {
+  //   return ''
+  // })
   const date = new Date()
   response.write(`<p>Phonebook has info for ${persons.length} people</p>`)
   response.write(`${date}`)
@@ -61,6 +83,9 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
+  // morgan.token('personsInfo', (req, res) => {
+  //   return ''
+  // })
   const id = Number(request.params.id);
   const person = persons.find(person => person.id === id)
 
@@ -74,6 +99,9 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
+  // morgan.token('personsInfo', (req, res) => {
+  //   return ''
+  // })
   const id = Number(request.params.id)
   const person = persons.filter(person => person.id !== id)
 
@@ -82,6 +110,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 
 app.post('/api/persons', (request, response) => {
+
   const body = request.body;
 
   if (!body.name) {
@@ -106,14 +135,17 @@ app.post('/api/persons', (request, response) => {
     id: Math.floor(Math.random() * 1000)
   }
 
-  morgan.token('personsInfo', (req, res) => {
-    return JSON.stringify(person)
-  })
+  // morgan.token('personsInfo', (req, res) => {
+  //   return JSON.stringify(person)
+  // })
 
   persons = persons.concat(person)
 
   response.json(person)
 })
+
+
+
 
 
 
