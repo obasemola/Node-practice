@@ -1,10 +1,24 @@
+require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
 app.use(express.static('build'));
 
 // app.use(morgan(':method :url :status :res[content-length] - :response-time ms :personsInfo'))
+
+
+const url = process.env.MONGODB_URI
+
+mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+
+const personSchema = new mongoose.Schema({
+  name: String,
+  number: Number
+ });
+
+ const Person = mongoose.model('Person', personSchema)
 
 app.use(cors());
 app.use(express.json());
@@ -67,7 +81,11 @@ app.get('/api/persons', (request, response) => {
   //   return '';
   // })
 
-  response.json(persons)
+  // response.json(persons)
+  Person.find({}).then(persons => {
+    response.json(persons)
+
+  })
 
 })
 
@@ -151,7 +169,7 @@ app.post('/api/persons', (request, response) => {
 
 
 
-const PORT = process.env.PORT || 3002
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
