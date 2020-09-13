@@ -3,14 +3,20 @@ const express = require('express');
 const Person = require('./models/person')
 const morgan = require('morgan');
 const cors = require('cors');
+const { response } = require('express');
 const app = express();
-app.use(express.json());
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message)
+}
+
 app.use(express.static('build'));
+app.use(express.json());
+
 
 // app.use(morgan(':method :url :status :res[content-length] - :response-time ms :personsInfo'))
 
 
-app.get('/index.html', (request, response) => {
+const getAll = app.get('/index.html', (request, response) => {
 
   // morgan.token('personsInfo', (req, res) => {
   //   return '';
@@ -19,6 +25,8 @@ app.get('/index.html', (request, response) => {
   // response.json(persons)
 
 })
+
+
 app.get('/api/persons', (request, response) => {
 
   // morgan.token('personsInfo', (req, res) => {
@@ -48,32 +56,28 @@ app.get('/api/persons/:id', (request, response) => {
   // morgan.token('personsInfo', (req, res) => {
   //   return ''
   // })
-  const id = Number(request.params.id);
-  const person = persons.find(person => person.id === id)
 
-  if (person) {
+  Person.findById(request.params.id).then(person => {
     response.json(person)
-  
-  } else {
-    response.status(404).end()
-  }
+  })
 
-})
+});
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   // morgan.token('personsInfo', (req, res) => {
   //   return ''
   // })
-  const id = Number(request.params.id)
-  const person = persons.filter(person => person.id !== id)
 
-  response.status(204).end()
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {response.status(204).end()
+  })
+    .catch(error => next(error))
 })
+app.use(errorHandler)
 
 
 app.post('/api/persons', (request, response) => {
 
-  console.log(request.body);
   const body = request.body;
 
   if (!body.name) {
@@ -100,9 +104,30 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
 
+  const person = {
+    name: body.name,
+    number: body.number,
 
+  }
 
+  console.log(person)
+
+  Person.findOne({name: body.name}).then(result => {
+    if(result) {
+      console.log(body.name)
+      Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+    }
+  })
+
+})
+app.use(errorHandler)
 
 
 
