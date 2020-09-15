@@ -9,9 +9,13 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, useCreat
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    unique: true
+    unique: true,
+    minlength: 3
   },
-  number: Number
+  number: {
+    type: Number,
+    minlength: 8
+  }
  });
 
  personSchema.set('toJSON', {
