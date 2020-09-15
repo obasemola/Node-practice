@@ -9,6 +9,12 @@ const errorHandler = (error, request, response, next) => {
   console.log(error.message)
 }
 
+const postErrorHandler = (error, request, response, next) => {
+  return response.status(409).json({
+    error: error.message
+})
+}
+
 app.use(express.static('build'));
 app.use(express.json());
 
@@ -83,11 +89,11 @@ app.post('/api/persons', (request, response, next) => {
 
   person.save()
     .then(savedPerson => {
-    response.json(savedPerson)
+      response.json(savedPerson)
   }).catch(error => next(error))
 
 });
-app.use(errorHandler);
+app.use(postErrorHandler);
 
 
 
