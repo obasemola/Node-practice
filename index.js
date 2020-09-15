@@ -76,7 +76,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.use(errorHandler)
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
 
   const body = request.body;
 
@@ -99,10 +99,12 @@ app.post('/api/persons', (request, response) => {
   //   return JSON.stringify(person)
   // })
 
-  person.save().then(savedPerson => {
+  person.save()
+    .then(savedPerson => {
     response.json(savedPerson)
-  })
+  }).catch(error => next(error))
 })
+app.use(errorHandler)
 
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
