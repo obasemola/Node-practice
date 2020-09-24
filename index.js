@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const Person = require('./models/person')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 const cors = require('cors')
 const { response, query } = require('express')
 const app = express()
@@ -17,7 +17,7 @@ const postErrorHandler = (error, request, response, next) => {
 
 app.use(express.static('build'))
 app.use(express.json())
-app.use(cors)
+app.use(cors())
 
 
 app.get('/index.html', (request, response) => {

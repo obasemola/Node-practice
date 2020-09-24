@@ -4,10 +4,10 @@
   "description": "\"\"",
   "main": "index.js",
   "scripts": {
-    "lint":"eslint .",
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "build:ui": "rm -rf build && cd ../../../../37258/part1 && npm run build --prod && xcopy -r build ../../backend",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/obasemola/Node-practice#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.10.3",
